@@ -4,13 +4,20 @@ from stl import mesh
 import trimesh
 import numpy as np
 import polyscope as ps
+import os
+from cqmore import Workplane
+
+
+# change working directory
+os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed") 
 
 ########### Functions Definitions ############
-# Add function to Rotate working plane with Angle to get different orientation of textures
-# Add function to transform an STL into a cadquery model - so we can manipulate real scans
+# Add function to Rotate working plane with Angle to get different orientation of textures - Done: function rotate_model
+# Add function to transform an STL into a cadquery model - so we can manipulate real scans - Identified a library that allows this: cqmore
 def create_plain_disc(Diameter, Height, EllipseW, EllipseH, gap):
     Disc = cq.Workplane("front").circle(Diameter / 2).extrude(Height)
     return Disc
+
 def create_disc(Diameter, Height, EllipseW, EllipseH, gap):
     Disc = cq.Workplane("front").circle(Diameter / 2).extrude(Height)
     # Change Extrusion Working Plane
@@ -25,7 +32,7 @@ def create_disc(Diameter, Height, EllipseW, EllipseH, gap):
 
 def reduce_area(model,Diameter,Height,AreaW) :
     if AreaW < Diameter and AreaW != 0:
-        model = model.workplane(centerOption="CenterOfMass").center(Diameter / 4 + AreaW / 2, 0).rect(Diameter / 2,                                                                                               Height + 1).cutThruAll()
+        model = model.workplane(centerOption="CenterOfMass").center(Diameter / 4 + AreaW / 2, 0).rect(Diameter / 2, Height + 1).cutThruAll()
         model = model.center(-Diameter / 2 - AreaW, 0).rect(Diameter / 2, Height + 1).cutThruAll()
     return model
 
@@ -40,14 +47,14 @@ def create_square(Diameter, Height, EllipseW, EllipseH, gap):
         Square = Square.center(2 * EllipseW + gap, 0).ellipse(EllipseW, EllipseH).cutThruAll()
     return Square
 
-def cutout_disc (model,Diameter) :
+def cutout_disc(model,Diameter) :
     model = model.cut(cq.Workplane("XY").rect(Diameter * 3, Diameter * 3).circle(Diameter / 2).extrude(2))
     model = model.cut(cq.Workplane("XY").rect(Diameter * 3, Diameter * 3).circle(Diameter / 2).extrude(-2))
     return model
 
+# plot in polyscope
 def show_model(filename):
     ps.init()
-
     myobj = trimesh.load_mesh(filename, enable_post_processing=True, solid=True) # Import Object fomr stl
     vertices = myobj.vertices
     faces = myobj.faces
@@ -55,8 +62,30 @@ def show_model(filename):
     ps_mesh = ps.register_surface_mesh(filename, vertices, faces)
     ps.show()
 
-def demo(Diameter,Height,EllipseW,EllipseH,gap): 
+# function to rotate model around center axis
+def rotate_model(model, Angle):
+    # rotate the working plane to get a different orientation
+    model = model.rotateAboutCenter((0,0,1), Angle)
+    return model
+
+# function to import STL to cadquery 
+# numpy-stl 2.16 or later is required
+def import_stl(filename):
+    vectors = mesh.Mesh.from_file(filename).vectors
+    points = tuple(map(tuple, vectors.reshape((vectors.shape[0] * vectors.shape[1], 3))))
+    faces = [(i, i + 1, i + 2) for i in range(0, len(points), 3)]
+    model_import = Workplane().polyhedron(points, faces)
+    exporters.export(model_import, 'model_import.stl')
+    show_model('model_import.stl')
+
+# import step to cadquery
+def import_step(filename):
+    import_model = cq.importers.importStep('filename')
+    #how_model(import_model)
+
+def demo(Diameter,Height,EllipseW,EllipseH,gap,Angle): 
     model1 = create_disc(Diameter,Height,EllipseW,EllipseH,gap) # Create Disc
+    #model1 = rotate_model(model1, 30)
     exporters.export(model1, 'Disc1.stl')  # Save stl file
     show_model('Disc1.stl')
 
@@ -70,7 +99,7 @@ def demo(Diameter,Height,EllipseW,EllipseH,gap):
     exporters.export(model3, 'Square1.stl') # Save stl file
     show_model('Square1.stl')
 
-    # 1 add a function to import stl with real texture in a mesh object (smallest possible texture)
+    # 1 add a function to import stl with real texture in a mesh object (smallest possible texture) - Refer to previous STL import functions
 
     # 2 ad a scaling function to scale up the real texture to test various width and heights
 
@@ -93,6 +122,11 @@ Height = 1
 EllipseH = 0.1
 EllipseW = 0.15
 gap = 0.1
-Angle = 0
+Angle = 30
 
-demo(Diameter,Height,EllipseW,EllipseH,gap)
+demo(Diameter,Height,EllipseW,EllipseH,gap,Angle)
+#show_model('scallop  - Filled-in non-measured points(1).stl')
+#import_step('scallopSTEP.step')
+#import_stl('Real.stl')
+#show_model('Real.stl')
+# result = cq.importers.importStep('scallop STEP.step')
