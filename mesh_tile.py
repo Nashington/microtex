@@ -59,7 +59,7 @@ def copy_obj(obj, dims, num_rows, num_cols, num_layers):
 main_body = mesh.Mesh.from_file('Real.stl')
 
 # rotate along Y
-#main_body.rotate([0.0, 0.5, 0.0], math.radians(90))
+main_body.rotate([0.0, 0.25, 0.0], math.radians(90))
 
 minx, maxx, miny, maxy, minz, maxz = find_mins_maxs(main_body)
 w1 = maxx - minx
