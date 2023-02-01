@@ -6,6 +6,8 @@ import os
 
 os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
 
+# https://pypi.org/project/numpy-stl/#:~:text=Combining%20multiple%20STL%20files
+
 # find the max dimensions, so we can know the bounding box, getting the height,
 # width, length (because these are the step size)...
 def find_mins_maxs(obj):
@@ -45,16 +47,16 @@ def copy_obj(obj, dims, num_rows, num_cols, num_layers):
                 # pad the space between objects by 10% of the dimension being
                 # translated
                 if col != 0:
-                    translate(_copy, w, w / 10., col, 'x')
+                    translate(_copy, w, 0, col, 'x')     ##### MULTIPLIER ####### 
                 if row != 0:
-                    translate(_copy, l, l / 10., row, 'y')
+                    translate(_copy, l, 0, row, 'y')     ##### MULTIPLIER ####### 
                 if layer != 0:
-                    translate(_copy, h, h / 10., layer, 'z')
+                    translate(_copy, h, 0, layer, 'z')   ##### MULTIPLIER ####### 
                 copies.append(_copy)
     return copies
 
 # Using an existing stl file:
-main_body = mesh.Mesh.from_file('Real2.stl')
+main_body = mesh.Mesh.from_file('Real.stl')
 
 # rotate along Y
 #main_body.rotate([0.0, 0.5, 0.0], math.radians(90))
@@ -66,15 +68,18 @@ h1 = maxz - minz
 copies = copy_obj(main_body, (w1, l1, h1), 2, 2, 1)
 
 # I wanted to add another related STL to the final STL
-twist_lock = mesh.Mesh.from_file('Real2.stl')
-minx, maxx, miny, maxy, minz, maxz = find_mins_maxs(twist_lock)
-w2 = maxx - minx
-l2 = maxy - miny
-h2 = maxz - minz
-translate(twist_lock, w1, w1 / 10., 3, 'x')
-copies2 = copy_obj(twist_lock, (w2, l2, h2), 2, 2, 1)
-combined = mesh.Mesh(numpy.concatenate([main_body.data, twist_lock.data] +
-                                    [copy.data for copy in copies] +
-                                    [copy.data for copy in copies2]))
+#twist_lock = mesh.Mesh.from_file('Real2.stl')
+#minx, maxx, miny, maxy, minz, maxz = find_mins_maxs(twist_lock)
+#w2 = maxx - minx
+#l2 = maxy - miny
+#h2 = maxz - minz
+#translate(twist_lock, w1, w1 / 10., 3, 'x')
+#copies2 = copy_obj(twist_lock, (w2, l2, h2), 2, 2, 1)
+#combined = mesh.Mesh(numpy.concatenate([main_body.data, twist_lock.data] +
+#                                    [copy.data for copy in copies] +
+#                                    [copy.data for copy in copies2]))
+
+combined = mesh.Mesh(numpy.concatenate([main_body.data] +
+                                    [copy.data for copy in copies]))
 
 combined.save('combined.stl', mode=stl.Mode.ASCII)  # save as ASCII
