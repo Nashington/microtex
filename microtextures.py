@@ -7,9 +7,77 @@ import polyscope as ps
 import os
 from cqmore import Workplane
 
+########### Class Definitions ###########
+# Define a class per texture shape to make future texture creations easier
+# Draw a diagram to define variables (plot with cadquery as well?)
+# Python classes are capitalised
 
-# change working directory
-os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed") 
+diameter = 10
+height = 1
+angle = 0
+area_w = 5
+
+class CQModel:
+    def __init__(self) -> None:
+        self.diameter = diameter
+        self.height = height
+        self.angle = angle
+        self.area_w = area_w
+
+    # Creates an untextured plain disc, then moves workplane to prepare for texture cut
+    def create_plain_disc(self):
+        disc = cq.Workplane("front").circle(self.diameter / 2).extrude(self.height)
+        disc = disc.workplane().transformed(offset=cq.Vector(0, 0, self.height / 2), rotate=cq.Vector(90, 0, 0))
+        return disc
+
+    # Rotates model around center axis
+    def rotate_model(self):
+        model = model.rotateAboutCenter((0,0,1), self.angle)
+        return model
+
+    # Creates an untextured plain square
+
+
+    # visualize!
+    def show_model(self, filename):
+        ps.init()
+        myobj = trimesh.load_mesh(filename, enable_post_processing=True, solid=True) # Import Object fomr stl
+        vertices = myobj.vertices
+        faces = myobj.faces
+        # visualize!
+        ps_mesh = ps.register_surface_mesh(filename, vertices, faces)
+        ps.show()
+
+    # Saves as STL
+    # https://stackoverflow.com/questions/12560600/creating-a-new-file-filename-contains-loop-variable-python
+    def export_STL(self, model, i, toggle_show):
+        exporters.export(model, "model" + str(i) + ".stl")  # Save stl file
+        # insert conditional statement, or modify .show_model, so we don't have to display every model
+        CQModel().show_model("model" + str(i) + ".stl")
+
+class Scallop(CQModel):
+    def __init__(self, depth, width, gap) -> None:
+        super().__init__()
+        self.depth = depth
+        self.width = width
+        self.gap = gap
+
+    # Cuts scallop texture into plain model
+    def texture_disc(self):
+        disc = CQModel.create_plain_disc(self)
+        disc = disc.center(-self.diameter / 2 + self.width +self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
+        total = 2 * self.width + self.gap
+        while total < self.diameter:
+            total += 2 * self.width + self.gap
+            disc = disc.center(2 * self.width + self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
+        return disc
+
+########### Main Program Start ############
+def main ():
+
+if __name__=='__main__':
+    main()
+
 
 ########### Functions Definitions ############
 # Add function to Rotate working plane with Angle to get different orientation of textures - Done: function rotate_model
@@ -70,6 +138,7 @@ def rotate_model(model, Angle):
 
 # function to import STL to cadquery 
 # numpy-stl 2.16 or later is required
+# uses cqmore
 def import_stl(filename):
     vectors = mesh.Mesh.from_file(filename).vectors
     points = tuple(map(tuple, vectors.reshape((vectors.shape[0] * vectors.shape[1], 3))))
@@ -115,18 +184,16 @@ def demo(Diameter,Height,EllipseW,EllipseH,gap,Angle):
     exporters.export(model4, 'Square3.stl') # Save stl file
     show_model('Square3.stl')
 ########### Main Program Start ############
-# Part Parameters
-Diameter = 10
-Height = 1
-# Scallop Texture Parameters
-EllipseH = 0.1
-EllipseW = 0.15
-gap = 0.1
-Angle = 30
+#def main():
+    # change working directory
+    #os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+    
+    #demo(Diameter,Height,EllipseW,EllipseH,gap,Angle)
+    #show_model('scallop  - Filled-in non-measured points(1).stl')
+    #import_step('scallopSTEP.step')
+    #import_stl('Real.stl')
+    #show_model('Real.stl')
+    # result = cq.importers.importStep('scallop STEP.step')
 
-demo(Diameter,Height,EllipseW,EllipseH,gap,Angle)
-#show_model('scallop  - Filled-in non-measured points(1).stl')
-#import_step('scallopSTEP.step')
-#import_stl('Real.stl')
-#show_model('Real.stl')
-# result = cq.importers.importStep('scallop STEP.step')
+#if __name__=='__main__':
+    #main()
