@@ -74,6 +74,14 @@ class Scallop(CQModel):
 
 ########### Main Program Start ############
 def main ():
+    # change working directory
+    os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+
+    # https://stackoverflow.com/questions/16552508/python-loops-for-simultaneous-operation-two-or-possibly-more
+    # to enable customisable ranges in geometry
+    for i, gap in zip(range(30,35), np.linspace(0.1, 0.5, 5)):
+        model = Scallop(0.1, 0.15, gap).texture_disc()
+        CQModel().export_STL(model, i)
 
 if __name__=='__main__':
     main()
