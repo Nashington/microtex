@@ -39,9 +39,13 @@ class CQModel:
 
 
     # visualize!
-    def show_model(self, filename):
+    def show_model(self, filename, i):
         ps.init()
         myobj = trimesh.load_mesh(filename, enable_post_processing=True, solid=True) # Import Object fomr stl
+        ##TEST##
+        myobj.apply_scale((1.1,1,1))
+        myobj.export("myobj"+ str(i) +".stl")
+        ########
         vertices = myobj.vertices
         faces = myobj.faces
         # visualize!
@@ -50,10 +54,10 @@ class CQModel:
 
     # Saves as STL
     # https://stackoverflow.com/questions/12560600/creating-a-new-file-filename-contains-loop-variable-python
-    def export_STL(self, model, i, toggle_show):
+    def export_STL(self, model, i,):
         exporters.export(model, "model" + str(i) + ".stl")  # Save stl file
         # insert conditional statement, or modify .show_model, so we don't have to display every model
-        CQModel().show_model("model" + str(i) + ".stl")
+        CQModel().show_model("model" + str(i) + ".stl", i)
 
 class Scallop(CQModel):
     def __init__(self, depth, width, gap) -> None:
