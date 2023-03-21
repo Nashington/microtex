@@ -234,11 +234,42 @@ def save_x(filename):
     x = point_cloud[:, 0]
     y = point_cloud[:, 1]
     z = point_cloud[:, 2]
-    xy = list(zip(x, y, -z))
+    inverted = list(zip(x, y, -z))
     #print(x.shape)
     #print(y.shape)
     #print(z.shape)
     #save the array as a .dat file
-    np.savetxt('x.dat', xy, fmt='%.3f', delimiter=' ')
+    np.savetxt('x.dat', inverted, fmt='%.3f', delimiter=' ')
+    polyscope.init()
+    original = polyscope.register_point_cloud("original", point_cloud, point_render_mode='quad')
+    polyscope.show()
+    polyscope.init()
+    inverted = np.loadtxt('x.dat') #need to initialise from file, can't go directly from list object
+    inverted = polyscope.register_point_cloud("inverted", inverted, point_render_mode='quad')
+    polyscope.show()
     
 save_x('Real.dat')
+
+# TO COMPLETE BORDER FUNCTION
+#take a point cloud and make another point cloud that represents a border around the original point cloud
+#def make_border(filename):
+#    point_cloud = np.loadtxt(filename)
+#    x = point_cloud[:, 0]
+#    y = point_cloud[:, 1]
+#    z = point_cloud[:, 2]
+    #find the number of elements in each dimension
+#    x_elements = len(np.unique(x))
+#    y_elements = len(np.unique(y))
+    #find the interval size between points in each dimension
+#    x_interval = x[1] - x[0]
+#    y_interval = y[1] - y[0]
+
+def checkwatertight(filename):
+    mesh = trimesh.load(filename, process=False, solid=True) #need to set post processing to false to make watertight
+    trimesh.repair.fill_holes(mesh)
+    trimesh.repair.broken_faces(mesh)
+    print (mesh.is_watertight)
+
+    mesh.export('combined_repairtest.stl')
+
+#checkwatertight('combined.stl')
