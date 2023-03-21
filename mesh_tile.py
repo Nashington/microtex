@@ -59,13 +59,13 @@ def copy_obj(obj, dims, num_rows, num_cols, num_layers):
 main_body = mesh.Mesh.from_file('Real.stl')
 
 # rotate along Y
-main_body.rotate([0.0, 0.25, 0.0], math.radians(90))
+main_body.rotate([0.0, 0.0, 0.0], math.radians(90))
 
 minx, maxx, miny, maxy, minz, maxz = find_mins_maxs(main_body)
 w1 = maxx - minx
 l1 = maxy - miny
 h1 = maxz - minz
-copies = copy_obj(main_body, (w1, l1, h1), 2, 2, 1)
+copies = copy_obj(main_body, (w1, l1, h1), 5, 2, 1)
 
 # I wanted to add another related STL to the final STL
 #twist_lock = mesh.Mesh.from_file('Real2.stl')
@@ -83,3 +83,16 @@ combined = mesh.Mesh(numpy.concatenate([main_body.data] +
                                     [copy.data for copy in copies]))
 
 combined.save('combined.stl', mode=stl.Mode.ASCII)  # save as ASCII
+
+#############################
+## Possible NumPy solution
+#############################
+#a = np.array([0, 6, 7, 9, 1, 2, 4, 6, 2, 7])
+
+
+#b = a.reshape(2, 5)
+#final = np.repeat(b, 3, axis=0)
+
+
+#test = np.tile(b, (3, 1))
+#final = np.concatenate((test[::2], test[1::2]))
