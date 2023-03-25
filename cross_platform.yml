@@ -1,0 +1,14 @@
+name: snowstorm
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - cadquery=master
+  - cq-editor=master
+  - trimesh
+  - polyscope
+  - numpy-stl
+  - git
+  - scipy
+  - networkx
+prefix: F:\anaconda3\envs\snowstorm
