@@ -5,7 +5,7 @@ import trimesh
 import numpy as np
 import polyscope as ps
 import os
-from cqmore import Workplane
+#from cqmore import Workplane
 
 ########### Class Definitions ###########
 # Define a class per texture shape to make future texture creations easier
@@ -14,8 +14,8 @@ from cqmore import Workplane
 
 diameter = 10
 height = 1
-angle = 0
-area_w = 5
+angle = 45
+area_w = 4
 
 class CQModel:
     def __init__(self) -> None:
@@ -31,12 +31,16 @@ class CQModel:
         return disc
 
     # Rotates model around center axis
-    def rotate_model(self):
-        model = model.rotateAboutCenter((0,0,1), self.angle)
+    def rotate_model(self, disc):
+        disc = disc.rotateAboutCenter((0,0,1), self.angle)
+        return disc
+    
+    # Reduces area of model
+    def reduce_area(self, model) :
+        if self.area_w < self.diameter and self.area_w != 0:
+            model = model.workplane(centerOption="CenterOfMass").center(self.diameter / 4 + self.area_w / 2, 0).rect(self.diameter / 2, self.height + 1).cutThruAll()
+            model = model.center(-self.diameter / 2 - self.area_w, 0).rect(self.diameter / 2, self.height + 1).cutThruAll()
         return model
-
-    # Creates an untextured plain square
-
 
     # visualize!
     def show_model(self, filename, i):
@@ -74,21 +78,23 @@ class Scallop(CQModel):
         while total < self.diameter:
             total += 2 * self.width + self.gap
             disc = disc.center(2 * self.width + self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
-        return disc
+        disc = CQModel.rotate_model(self, disc)
+        model = CQModel.reduce_area(self, disc)
+        return model
 
 ########### Main Program Start ############
-def main ():
+#def main ():
     # change working directory
-    os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+#    os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
 
     # https://stackoverflow.com/questions/16552508/python-loops-for-simultaneous-operation-two-or-possibly-more
     # to enable customisable ranges in geometry
-    for i, gap in zip(range(30,35), np.linspace(0.1, 0.5, 5)):
-        model = Scallop(0.1, 0.15, gap).texture_disc()
-        CQModel().export_STL(model, i)
+#    for i, gap in zip(range(30,35), np.linspace(0.1, 0.5, 5)):
+#        model = Scallop(0.1, 0.15, gap).texture_disc()
+#        CQModel().export_STL(model, i)
 
-if __name__=='__main__':
-    main()
+#if __name__=='__main__':
+#    main()
 
 
 ########### Functions Definitions ############
@@ -162,11 +168,11 @@ def import_stl(filename):
 # import step to cadquery
 def import_step(filename):
     import_model = cq.importers.importStep('filename')
-    #how_model(import_model)
+    show_model(import_model)
 
 def demo(Diameter,Height,EllipseW,EllipseH,gap,Angle): 
     model1 = create_disc(Diameter,Height,EllipseW,EllipseH,gap) # Create Disc
-    #model1 = rotate_model(model1, 30)
+    model1 = rotate_model(model1, 30)
     exporters.export(model1, 'Disc1.stl')  # Save stl file
     show_model('Disc1.stl')
 
@@ -196,16 +202,25 @@ def demo(Diameter,Height,EllipseW,EllipseH,gap,Angle):
     exporters.export(model4, 'Square3.stl') # Save stl file
     show_model('Square3.stl')
 ########### Main Program Start ############
-#def main():
+def main():
     # change working directory
-    #os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+    os.chdir(r"C:\Users\nashi\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+
+    # Part Parameters
+    Diameter = 10
+    Height = 1
+    # Scallop Texture Parameters
+    EllipseH = 0.1
+    EllipseW = 0.15
+    gap = 0.1
+    Angle = 45
     
-    #demo(Diameter,Height,EllipseW,EllipseH,gap,Angle)
+    demo(Diameter,Height,EllipseW,EllipseH,gap,Angle)
     #show_model('scallop  - Filled-in non-measured points(1).stl')
     #import_step('scallopSTEP.step')
     #import_stl('Real.stl')
     #show_model('Real.stl')
     # result = cq.importers.importStep('scallop STEP.step')
 
-#if __name__=='__main__':
-    #main()
+if __name__=='__main__':
+    main()
