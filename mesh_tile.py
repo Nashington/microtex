@@ -3,8 +3,8 @@ import stl
 from stl import mesh
 import numpy
 import os
-
-os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+import time
+os.chdir(r"D:\STL testbed")
 
 # https://pypi.org/project/numpy-stl/#:~:text=Combining%20multiple%20STL%20files
 
@@ -55,6 +55,7 @@ def copy_obj(obj, dims, num_rows, num_cols, num_layers):
                 copies.append(_copy)
     return copies
 
+tick = time.time()
 # Using an existing stl file:
 main_body = mesh.Mesh.from_file('Real.stl')
 
@@ -65,7 +66,7 @@ minx, maxx, miny, maxy, minz, maxz = find_mins_maxs(main_body)
 w1 = maxx - minx
 l1 = maxy - miny
 h1 = maxz - minz
-copies = copy_obj(main_body, (w1, l1, h1), 5, 2, 1)
+copies = copy_obj(main_body, (w1, l1, h1), 5, 45, 1)
 
 # I wanted to add another related STL to the final STL
 #twist_lock = mesh.Mesh.from_file('Real2.stl')
@@ -82,7 +83,10 @@ copies = copy_obj(main_body, (w1, l1, h1), 5, 2, 1)
 combined = mesh.Mesh(numpy.concatenate([main_body.data] +
                                     [copy.data for copy in copies]))
 
-combined.save('combined.stl', mode=stl.Mode.ASCII)  # save as ASCII
+combined.save('combined binary 5-45.stl', mode=stl.Mode.BINARY)  # save as ASCII or BINARY
+
+tock = time.time()
+print(tock - tick)
 
 #############################
 ## Possible NumPy solution
