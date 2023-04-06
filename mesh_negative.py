@@ -3,13 +3,14 @@ import os
 import numpy as np
 import stl
 from stl import mesh
+import pyvista
 #import scipy
 #import pymesh
 import polyscope
 
 
 
-os.chdir("P:\OneDrive\Cardiff University\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+os.chdir(r"D:\STL testbed")
 
 #create a function that takes in a .dat point cloud file and returns an stl object with thickness
 def point_cloud_to_stl(filename, thickness):
@@ -225,8 +226,8 @@ def invert_z(filename):
 #invert_z('Real.dat')
 
 ### WORKS!!!!! ###
-#make a function that takes a .dat file cloud of points and saves the x coordinates as a .dat file
-#modify the function to 
+#make a function that takes a .dat file cloud of points and inverts it in the z direction
+#started from first principles
 def save_x(filename):
     #load the .dat file
     point_cloud = np.loadtxt(filename)
@@ -248,7 +249,7 @@ def save_x(filename):
     inverted = polyscope.register_point_cloud("inverted", inverted, point_render_mode='quad')
     polyscope.show()
     
-save_x('Real.dat')
+#save_x('Real.dat')
 
 # TO COMPLETE BORDER FUNCTION
 #take a point cloud and make another point cloud that represents a border around the original point cloud
@@ -273,3 +274,14 @@ def checkwatertight(filename):
     mesh.export('combined_repairtest.stl')
 
 #checkwatertight('combined.stl')
+
+# too slow
+def surface_reconstruction(filename):
+    # NumPy array with shape (n_points, 3)
+    #points = np.genfromtxt('filename', delimiter=" ", dtype=np.float32)
+    points = np.loadtxt(filename)
+    point_cloud = pyvista.PolyData(points)
+    mesh = point_cloud.reconstruct_surface()
+    mesh.save('reconstruction.stl')
+
+#surface_reconstruction("inverted_z.dat")
