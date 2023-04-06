@@ -1,16 +1,22 @@
 import microtextures
 import os
 import numpy as np
+import time
 
-def main ():
+def main():
+    tick = time.time()
     # change working directory
-    os.chdir(r"C:\Users\nashi\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+    os.chdir(r"D:\Model Testbed")
 
     # https://stackoverflow.com/questions/16552508/python-loops-for-simultaneous-operation-two-or-possibly-more
     # to enable customisable ranges in geometry
-    for i, gap in zip(range(30,35), np.linspace(0.1, 0.2, 2)):
-        model = microtextures.Scallop(0.1, 0.15, gap).texture_disc()
+    
+    for i, angle in zip(range(40,43), np.linspace(0, 90, 3)):
+        model = microtextures.Scallop(0.1, 0.15, 0.2, angle).texture_disc()
         microtextures.CQModel().export_STL(model, i)
+
+    tock = time.time()
+    print("Time taken: ", tock - tick)
 
 if __name__=='__main__':
     main()

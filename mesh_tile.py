@@ -4,6 +4,7 @@ from stl import mesh
 import numpy
 import os
 import time
+
 os.chdir(r"D:\STL testbed")
 
 # https://pypi.org/project/numpy-stl/#:~:text=Combining%20multiple%20STL%20files
