@@ -14,14 +14,14 @@ import os
 
 diameter = 10
 height = 1
-angle = 45
+#angle = 30
 area_w = 4
 
 class CQModel:
     def __init__(self) -> None:
         self.diameter = diameter
         self.height = height
-        self.angle = angle
+        #self.angle = angle
         self.area_w = area_w
 
     # Creates an untextured plain disc, then moves workplane to prepare for texture cut
@@ -31,14 +31,14 @@ class CQModel:
         return disc
 
     # Rotates model around center axis
-    def rotate_model(self, disc):
-        disc = disc.rotateAboutCenter((0,0,1), self.angle)
-        return disc
+    def rotate_model(self, disc_in, angle):
+        model = disc_in.rotateAboutCenter((0,0,1), angle)
+        return model
     
     # Reduces area of model
-    def reduce_area(self, model) :
+    def reduce_area(self, model_in) :
         if self.area_w < self.diameter and self.area_w != 0:
-            model = model.workplane(centerOption="CenterOfMass").center(self.diameter / 4 + self.area_w / 2, 0).rect(self.diameter / 2, self.height + 1).cutThruAll()
+            model = model_in.workplane(centerOption="CenterOfMass").center(self.diameter / 4 + self.area_w / 2, 0).rect(self.diameter / 2, self.height + 1).cutThruAll()
             model = model.center(-self.diameter / 2 - self.area_w, 0).rect(self.diameter / 2, self.height + 1).cutThruAll()
         return model
 
@@ -48,7 +48,7 @@ class CQModel:
         myobj = trimesh.load_mesh(filename, enable_post_processing=True, solid=True) # Import Object fomr stl
         ##TEST##
         myobj.apply_scale((1.1,1,1))
-        myobj.export("myobj"+ str(i) +".stl")
+        #myobj.export("myobj"+ str(i) +".stl")
         ########
         vertices = myobj.vertices
         faces = myobj.faces
@@ -64,11 +64,12 @@ class CQModel:
         CQModel().show_model("model" + str(i) + ".stl", i)
 
 class Scallop(CQModel):
-    def __init__(self, depth, width, gap) -> None:
+    def __init__(self, depth, width, gap, angle) -> None:
         super().__init__()
         self.depth = depth
         self.width = width
         self.gap = gap
+        self.angle = angle
 
     # Cuts scallop texture into plain model
     def texture_disc(self):
@@ -78,8 +79,8 @@ class Scallop(CQModel):
         while total < self.diameter:
             total += 2 * self.width + self.gap
             disc = disc.center(2 * self.width + self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
-        disc = CQModel.rotate_model(self, disc)
-        model = CQModel.reduce_area(self, disc)
+        model = CQModel.rotate_model(self, disc, self.angle)
+        model = CQModel.reduce_area(self, model)
         return model
 
 ########### Main Program Start ############
@@ -157,7 +158,7 @@ def rotate_model(model, Angle):
 # function to import STL to cadquery 
 # numpy-stl 2.16 or later is required
 # uses cqmore
-def import_stl(filename):
+#def import_stl(filename):
     vectors = mesh.Mesh.from_file(filename).vectors
     points = tuple(map(tuple, vectors.reshape((vectors.shape[0] * vectors.shape[1], 3))))
     faces = [(i, i + 1, i + 2) for i in range(0, len(points), 3)]
@@ -202,25 +203,25 @@ def demo(Diameter,Height,EllipseW,EllipseH,gap,Angle):
     exporters.export(model4, 'Square3.stl') # Save stl file
     show_model('Square3.stl')
 ########### Main Program Start ############
-def main():
+#def main():
     # change working directory
-    os.chdir(r"C:\Users\nashi\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
+#    os.chdir(r"C:\Users\nashi\OneDrive - Cardiff University\Year 3\EN3100 - Project\Testbed")
 
     # Part Parameters
-    Diameter = 10
-    Height = 1
+#    Diameter = 10
+#    Height = 1
     # Scallop Texture Parameters
-    EllipseH = 0.1
-    EllipseW = 0.15
-    gap = 0.1
-    Angle = 45
+#    EllipseH = 0.1
+#    EllipseW = 0.15
+#    gap = 0.1
+#    Angle = 45
     
-    demo(Diameter,Height,EllipseW,EllipseH,gap,Angle)
+#    demo(Diameter,Height,EllipseW,EllipseH,gap,Angle)
     #show_model('scallop  - Filled-in non-measured points(1).stl')
     #import_step('scallopSTEP.step')
     #import_stl('Real.stl')
     #show_model('Real.stl')
     # result = cq.importers.importStep('scallop STEP.step')
 
-if __name__=='__main__':
-    main()
+#if __name__=='__main__':
+#    main()
