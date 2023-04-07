@@ -21,7 +21,6 @@ class CQModel:
     def __init__(self) -> None:
         self.diameter = diameter
         self.height = height
-        #self.angle = angle
         self.area_w = area_w
 
     # Creates an untextured plain disc, then moves workplane to prepare for texture cut
