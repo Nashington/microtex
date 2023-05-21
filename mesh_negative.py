@@ -3,7 +3,7 @@ import os
 import numpy as np
 import stl
 from stl import mesh
-import pyvista
+#import pyvista
 #import scipy
 #import pymesh
 import polyscope
@@ -11,6 +11,72 @@ import polyscope
 
 
 os.chdir(r"D:\STL testbed")
+
+# generate some neat n times 3 matrix using a variant of sync function
+def make_sinc():
+    x = np.linspace(-3, 3, 401)
+    mesh_x, mesh_y = np.meshgrid(x, x)
+    z = np.sinc((np.power(mesh_x, 2) + np.power(mesh_y, 2)))
+    z_norm = (z - z.min()) / (z.max() - z.min())
+    xyz = np.zeros((np.size(mesh_x), 3))
+    xyz[:, 0] = np.reshape(mesh_x, -1)
+    xyz[:, 1] = np.reshape(mesh_y, -1)
+    xyz[:, 2] = np.reshape(z_norm, -1)
+    polyscope.init()
+    #register the point cloud
+    ps_cloud = polyscope.register_point_cloud("my points", xyz)
+    #show the point cloud
+    polyscope.show()
+    print('xyz')
+    print(xyz)
+
+#make_sinc()
+
+### WORKS!!!!! ###
+#rewrote, starting from first principles
+def invert_z(filename):
+    #load the .dat file
+    point_cloud = np.loadtxt(filename)
+    #create an array of the x coordinates
+    x = point_cloud[:, 0]
+    y = point_cloud[:, 1]
+    z = point_cloud[:, 2]
+    inverted = list(zip(x, y, -z))
+    #print(x.shape)
+    #print(y.shape)
+    #print(z.shape)
+    #save the array as a .dat file
+    np.savetxt('x.dat', inverted, fmt='%.3f', delimiter=' ')
+    polyscope.init()
+    original = polyscope.register_point_cloud("original", point_cloud, point_render_mode='quad')
+    polyscope.show()
+    polyscope.init()
+    inverted = np.loadtxt('x.dat') #need to initialise from file, can't go directly from list object
+    inverted = polyscope.register_point_cloud("inverted", inverted, point_render_mode='quad')
+    polyscope.show()
+
+invert_z('Real.dat')
+
+def checkwatertight(filename):
+    mesh = trimesh.load(filename, process=False, solid=True) #need to set post processing to false to make watertight
+    trimesh.repair.fill_holes(mesh)
+    trimesh.repair.broken_faces(mesh)
+    print (mesh.is_watertight)
+
+    mesh.export('combined_repairtest.stl')
+
+#checkwatertight('combined.stl')
+
+# too slow
+def surface_reconstruction(filename):
+    # NumPy array with shape (n_points, 3)
+    #points = np.genfromtxt('filename', delimiter=" ", dtype=np.float32)
+    points = np.loadtxt(filename)
+    point_cloud = pyvista.PolyData(points)
+    mesh = point_cloud.reconstruct_surface()
+    mesh.save('reconstruction.stl')
+
+#surface_reconstruction("inverted_z.dat")
 
 #create a function that takes in a .dat point cloud file and returns an stl object with thickness
 def point_cloud_to_stl(filename, thickness):
@@ -175,81 +241,6 @@ def make_array(filename):
     polyscope.show()
 
 #make_array('Real.dat')
-    
-# generate some neat n times 3 matrix using a variant of sync function
-def make_sinc():
-    x = np.linspace(-3, 3, 401)
-    mesh_x, mesh_y = np.meshgrid(x, x)
-    z = np.sinc((np.power(mesh_x, 2) + np.power(mesh_y, 2)))
-    z_norm = (z - z.min()) / (z.max() - z.min())
-    xyz = np.zeros((np.size(mesh_x), 3))
-    xyz[:, 0] = np.reshape(mesh_x, -1)
-    xyz[:, 1] = np.reshape(mesh_y, -1)
-    xyz[:, 2] = np.reshape(z_norm, -1)
-    polyscope.init()
-    #register the point cloud
-    ps_cloud = polyscope.register_point_cloud("my points", xyz)
-    #show the point cloud
-    polyscope.show()
-    print('xyz')
-    print(xyz)
-
-#make_sinc()
-
-#make a function that takes a .dat file cloud of points and inverts it in the z direction
-def invert_z(filename):
-    #load the .dat file
-    point_cloud = np.loadtxt(filename)
-    #create an array of the x coordinates
-    x = point_cloud[:, 0]
-    #create an array of the y coordinates
-    y = point_cloud[:, 1]
-    #create an array of the z coordinates
-    z = point_cloud[:, 2]
-    #invert the z coordinates
-    z = -z
-    #create an array of the x, y, z coordinates
-    xyz = np.zeros((np.size(point_cloud), 3))
-    xyz[:, 0] = np.reshape(x, -1)
-    xyz[:, 1] = np.reshape(y, -1)
-    xyz[:, 2] = np.reshape(z, -1)
-    #save the array as a .dat file
-    np.savetxt('inverted.dat', xyz, fmt='%.18g', delimiter=' ', newline=os.linesep)
-    #visualise
-    #initialise polyscope
-    polyscope.init()
-    #register the point cloud
-    ps_cloud = polyscope.register_point_cloud("my points", xyz)
-    #show the point cloud
-    polyscope.show()
-
-#invert_z('Real.dat')
-
-### WORKS!!!!! ###
-#make a function that takes a .dat file cloud of points and inverts it in the z direction
-#started from first principles
-def save_x(filename):
-    #load the .dat file
-    point_cloud = np.loadtxt(filename)
-    #create an array of the x coordinates
-    x = point_cloud[:, 0]
-    y = point_cloud[:, 1]
-    z = point_cloud[:, 2]
-    inverted = list(zip(x, y, -z))
-    #print(x.shape)
-    #print(y.shape)
-    #print(z.shape)
-    #save the array as a .dat file
-    np.savetxt('x.dat', inverted, fmt='%.3f', delimiter=' ')
-    polyscope.init()
-    original = polyscope.register_point_cloud("original", point_cloud, point_render_mode='quad')
-    polyscope.show()
-    polyscope.init()
-    inverted = np.loadtxt('x.dat') #need to initialise from file, can't go directly from list object
-    inverted = polyscope.register_point_cloud("inverted", inverted, point_render_mode='quad')
-    polyscope.show()
-    
-#save_x('Real.dat')
 
 # TO COMPLETE BORDER FUNCTION
 #take a point cloud and make another point cloud that represents a border around the original point cloud
@@ -264,24 +255,3 @@ def save_x(filename):
     #find the interval size between points in each dimension
 #    x_interval = x[1] - x[0]
 #    y_interval = y[1] - y[0]
-
-def checkwatertight(filename):
-    mesh = trimesh.load(filename, process=False, solid=True) #need to set post processing to false to make watertight
-    trimesh.repair.fill_holes(mesh)
-    trimesh.repair.broken_faces(mesh)
-    print (mesh.is_watertight)
-
-    mesh.export('combined_repairtest.stl')
-
-#checkwatertight('combined.stl')
-
-# too slow
-def surface_reconstruction(filename):
-    # NumPy array with shape (n_points, 3)
-    #points = np.genfromtxt('filename', delimiter=" ", dtype=np.float32)
-    points = np.loadtxt(filename)
-    point_cloud = pyvista.PolyData(points)
-    mesh = point_cloud.reconstruct_surface()
-    mesh.save('reconstruction.stl')
-
-#surface_reconstruction("inverted_z.dat")
