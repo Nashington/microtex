@@ -1,6 +1,7 @@
 name: snowstorm
 channels:
   - conda-forge
+  - cadquery
   - defaults
 dependencies:
   - cadquery=master
