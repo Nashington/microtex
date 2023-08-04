@@ -57,10 +57,16 @@ class CQModel:
 
     # Saves as STL
     # https://stackoverflow.com/questions/12560600/creating-a-new-file-filename-contains-loop-variable-python
+    # Deprecated for use with ideal models, but still useful as a real model equivalent
     def export_STL(self, model, i,):
         exporters.export(model, "model" + str(i) + ".stl")  # Save stl file
         # insert conditional statement, or modify .show_model, so we don't have to display every model
         CQModel().show_model("model" + str(i) + ".stl", i)
+
+    # Saves as STEP
+    # Add a prompt for file save location, or save to a default location
+    def export_STEP(self, model, i):
+        exporters.export(model, "model" + str(i) + ".step")
 
 class Scallop(CQModel):
     def __init__(self, depth, width, gap, angle) -> None:
