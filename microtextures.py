@@ -87,6 +87,32 @@ class Scallop(CQModel):
         model = CQModel.rotate_model(self, disc, self.angle)
         model = CQModel.reduce_area(self, model)
         return model
+    
+# create a class called Lotus that inherits from Scallop, and adds to the texture_disc function by repeating the cut after rotating the model by 90 degrees once
+# this will allow us to create a lotus texture with a single function call
+# if we add to this, we can also decouple the parameters of the second cut from the first cut, so we can have different widths/depths/gaps for each cut
+class Lotus(Scallop):
+    def __init__(self, depth, width, gap, angle) -> None:
+        super().__init__(depth, width, gap, angle)
+
+    def texture_disc(self):
+        disc = CQModel.create_plain_disc(self)
+        disc = disc.center(-self.diameter / 2 + self.width +self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
+        total = 2 * self.width + self.gap
+        while total < self.diameter:
+            total += 2 * self.width + self.gap
+            disc = disc.center(2 * self.width + self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
+        disc = CQModel.rotate_model(self, disc, 90)
+        disc = disc.center(-self.diameter / 2 + self.width +self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
+        total = 2 * self.width + self.gap
+        while total < self.diameter:
+            total += 2 * self.width + self.gap
+            disc = disc.center(2 * self.width + self.gap, 0).ellipse(self.width, self.depth).cutThruAll()
+        model = CQModel.rotate_model(self, disc, self.angle)
+        model = CQModel.reduce_area(self, model)
+        #adding the previous two lines results in a square model, because it repeats the reduce_area function after rotation
+        return disc
+
 
 ########### Main Program Start ############
 #def main ():
