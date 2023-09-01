@@ -18,7 +18,7 @@ height = 1
 area_w = 4
 
 class CQModel:
-    def __init__(self) -> None:
+    def __init__(self, diameter, height, area_w) -> None:
         self.diameter = diameter
         self.height = height
         self.area_w = area_w
@@ -70,7 +70,8 @@ class CQModel:
 
 class Scallop(CQModel):
     def __init__(self, depth, width, gap, angle) -> None:
-        super().__init__()
+        #initialise CQModel using width of the elipse as the depth
+        super().__init__(diameter, height, area_w)
         self.depth = depth
         self.width = width
         self.gap = gap

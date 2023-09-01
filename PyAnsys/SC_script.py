@@ -1,8 +1,9 @@
 # Python Script, API Version = V23
 
 # Open File
-DocumentOpen.Execute(r"E:\Summer Placement\Testbed\model41.step")
+DocumentOpen.Execute(r"D:\Work\Summer Placement Testbed\model40.step")
 # EndBlock
+
 
 
 # Set Sketch Plane
@@ -85,8 +86,8 @@ result = NamedSelection.Rename("Group1", "Output")
 
 # Create Named Selection Group
 primarySelection = FaceSelection.Create([GetRootPart().Bodies[0].Faces[59],
-	GetRootPart().Bodies[0].Faces[2],
-	GetRootPart().Bodies[0].Faces[58]])
+    GetRootPart().Bodies[0].Faces[2],
+    GetRootPart().Bodies[0].Faces[58]])
 secondarySelection = Selection.Empty()
 result = NamedSelection.Create(primarySelection, secondarySelection)
 # EndBlock
@@ -97,60 +98,60 @@ result = NamedSelection.Rename("Group1", "Free flow")
 
 # Create Named Selection Group
 primarySelection = FaceSelection.Create([GetRootPart().Bodies[0].Faces[3],
-	GetRootPart().Bodies[0].Faces[4],
-	GetRootPart().Bodies[0].Faces[5],
-	GetRootPart().Bodies[0].Faces[6],
-	GetRootPart().Bodies[0].Faces[7],
-	GetRootPart().Bodies[0].Faces[8],
-	GetRootPart().Bodies[0].Faces[9],
-	GetRootPart().Bodies[0].Faces[10],
-	GetRootPart().Bodies[0].Faces[11],
-	GetRootPart().Bodies[0].Faces[12],
-	GetRootPart().Bodies[0].Faces[13],
-	GetRootPart().Bodies[0].Faces[14],
-	GetRootPart().Bodies[0].Faces[15],
-	GetRootPart().Bodies[0].Faces[16],
-	GetRootPart().Bodies[0].Faces[17],
-	GetRootPart().Bodies[0].Faces[18],
-	GetRootPart().Bodies[0].Faces[19],
-	GetRootPart().Bodies[0].Faces[20],
-	GetRootPart().Bodies[0].Faces[21],
-	GetRootPart().Bodies[0].Faces[22],
-	GetRootPart().Bodies[0].Faces[23],
-	GetRootPart().Bodies[0].Faces[24],
-	GetRootPart().Bodies[0].Faces[25],
-	GetRootPart().Bodies[0].Faces[26],
-	GetRootPart().Bodies[0].Faces[27],
-	GetRootPart().Bodies[0].Faces[28],
-	GetRootPart().Bodies[0].Faces[29],
-	GetRootPart().Bodies[0].Faces[30],
-	GetRootPart().Bodies[0].Faces[31],
-	GetRootPart().Bodies[0].Faces[32],
-	GetRootPart().Bodies[0].Faces[33],
-	GetRootPart().Bodies[0].Faces[34],
-	GetRootPart().Bodies[0].Faces[35],
-	GetRootPart().Bodies[0].Faces[36],
-	GetRootPart().Bodies[0].Faces[37],
-	GetRootPart().Bodies[0].Faces[38],
-	GetRootPart().Bodies[0].Faces[39],
-	GetRootPart().Bodies[0].Faces[40],
-	GetRootPart().Bodies[0].Faces[41],
-	GetRootPart().Bodies[0].Faces[42],
-	GetRootPart().Bodies[0].Faces[43],
-	GetRootPart().Bodies[0].Faces[44],
-	GetRootPart().Bodies[0].Faces[45],
-	GetRootPart().Bodies[0].Faces[46],
-	GetRootPart().Bodies[0].Faces[47],
-	GetRootPart().Bodies[0].Faces[48],
-	GetRootPart().Bodies[0].Faces[49],
-	GetRootPart().Bodies[0].Faces[50],
-	GetRootPart().Bodies[0].Faces[51],
-	GetRootPart().Bodies[0].Faces[52],
-	GetRootPart().Bodies[0].Faces[53],
-	GetRootPart().Bodies[0].Faces[54],
-	GetRootPart().Bodies[0].Faces[55],
-	GetRootPart().Bodies[0].Faces[56],
-	GetRootPart().Bodies[0].Faces[57]])
+    GetRootPart().Bodies[0].Faces[4],
+    GetRootPart().Bodies[0].Faces[5],
+    GetRootPart().Bodies[0].Faces[6],
+    GetRootPart().Bodies[0].Faces[7],
+    GetRootPart().Bodies[0].Faces[8],
+    GetRootPart().Bodies[0].Faces[9],
+    GetRootPart().Bodies[0].Faces[10],
+    GetRootPart().Bodies[0].Faces[11],
+    GetRootPart().Bodies[0].Faces[12],
+    GetRootPart().Bodies[0].Faces[13],
+    GetRootPart().Bodies[0].Faces[14],
+    GetRootPart().Bodies[0].Faces[15],
+    GetRootPart().Bodies[0].Faces[16],
+    GetRootPart().Bodies[0].Faces[17],
+    GetRootPart().Bodies[0].Faces[18],
+    GetRootPart().Bodies[0].Faces[19],
+    GetRootPart().Bodies[0].Faces[20],
+    GetRootPart().Bodies[0].Faces[21],
+    GetRootPart().Bodies[0].Faces[22],
+    GetRootPart().Bodies[0].Faces[23],
+    GetRootPart().Bodies[0].Faces[24],
+    GetRootPart().Bodies[0].Faces[25],
+    GetRootPart().Bodies[0].Faces[26],
+    GetRootPart().Bodies[0].Faces[27],
+    GetRootPart().Bodies[0].Faces[28],
+    GetRootPart().Bodies[0].Faces[29],
+    GetRootPart().Bodies[0].Faces[30],
+    GetRootPart().Bodies[0].Faces[31],
+    GetRootPart().Bodies[0].Faces[32],
+    GetRootPart().Bodies[0].Faces[33],
+    GetRootPart().Bodies[0].Faces[34],
+    GetRootPart().Bodies[0].Faces[35],
+    GetRootPart().Bodies[0].Faces[36],
+    GetRootPart().Bodies[0].Faces[37],
+    GetRootPart().Bodies[0].Faces[38],
+    GetRootPart().Bodies[0].Faces[39],
+    GetRootPart().Bodies[0].Faces[40],
+    GetRootPart().Bodies[0].Faces[41],
+    GetRootPart().Bodies[0].Faces[42],
+    GetRootPart().Bodies[0].Faces[43],
+    GetRootPart().Bodies[0].Faces[44],
+    GetRootPart().Bodies[0].Faces[45],
+    GetRootPart().Bodies[0].Faces[46],
+    GetRootPart().Bodies[0].Faces[47],
+    GetRootPart().Bodies[0].Faces[48],
+    GetRootPart().Bodies[0].Faces[49],
+    GetRootPart().Bodies[0].Faces[50],
+    GetRootPart().Bodies[0].Faces[51],
+    GetRootPart().Bodies[0].Faces[52],
+    GetRootPart().Bodies[0].Faces[53],
+    GetRootPart().Bodies[0].Faces[54],
+    GetRootPart().Bodies[0].Faces[55],
+    GetRootPart().Bodies[0].Faces[56],
+    GetRootPart().Bodies[0].Faces[57]])
 secondarySelection = Selection.Empty()
 result = NamedSelection.Create(primarySelection, secondarySelection)
 # EndBlock
