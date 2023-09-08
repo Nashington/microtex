@@ -1,26 +1,57 @@
-# Python Script, API Version = V23
+# Python Script, API Version = V232
+fileName = r"E:\Summer Placement\Summer Placement Testbed\model8.step"
 
 # Open File
-DocumentOpen.Execute(r"D:\Work\Summer Placement Testbed\model40.step")
+importOptions = ImportOptions.Create()
+DocumentOpen.Execute(fileName, importOptions)
+# EndBlock
+
+# Rotate About X Handle
+selection = BodySelection.Create(GetRootPart().Bodies[0])
+anchorPoint = Move.GetAnchorPoint(selection)
+axis = Line.Create(anchorPoint, Direction.DirX)
+options = MoveOptions()
+result = Move.Rotate(selection, axis, DEG(-90), options)
+# EndBlock
+
+# Copy items
+result = Copy.Execute(BodySelection.Create(GetRootPart().Bodies[0]))
+# EndBlock
+
+# Change Object Visibility
+selection = BodySelection.Create(GetRootPart().Bodies[0])
+visibility = VisibilityType.Hide
+inSelectedView = False
+faceLevel = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView, faceLevel)
 # EndBlock
 
 
+# Extrude 1 Face
+selection = FaceSelection.Create(GetRootPart().Bodies[1].Faces[1])
+reference = Selection.Create(GetRootPart().Bodies[1].Edges[95].GetChildren[ICurvePoint]()[1])
+options = ExtrudeFaceOptions()
+options.ExtrudeType = ExtrudeType.ForceAdd
+result = ExtrudeFaces.SetDimension(selection, reference, MM(4.28612223837642E-17), options)
+# EndBlock
+
 
 # Set Sketch Plane
-sectionPlane = Plane.PlaneXY
+sectionPlane = Plane.Create(Frame.Create(Point.Create(MM(-0.000698949144037528), MM(0.500698952479627), MM(0.510000003335324)), 
+    Direction.DirX, 
+    -Direction.DirZ))
 result = ViewHelper.SetSketchPlane(sectionPlane, None)
 # EndBlock
 
 # Sketch Rectangle
-point1 = Point2D.Create(MM(-1.00084070880403),MM(-6))
-point2 = Point2D.Create(MM(1),MM(-6))
-point3 = Point2D.Create(MM(1),MM(6))
+point1 = Point2D.Create(MM(-2.00000000000003),MM(-6))
+point2 = Point2D.Create(MM(2.00000000000004),MM(-6))
+point3 = Point2D.Create(MM(2.00000000000004),MM(6))
 result = SketchRectangle.Create(point1, point2, point3)
 # EndBlock
 
-
 # Change Object Visibility
-selection = BodySelection.Create(GetRootPart().Bodies[0])
+selection = BodySelection.Create(GetRootPart().Bodies[1])
 visibility = VisibilityType.Hide
 inSelectedView = False
 faceLevel = False
@@ -33,10 +64,24 @@ result = ViewHelper.SetViewMode(mode, None)
 # EndBlock
 
 # Extrude 1 Face
-selection = FaceSelection.Create(GetRootPart().Bodies[1].Faces[0])
+selection = FaceSelection.Create(GetRootPart().Bodies[2].Faces[0])
 options = ExtrudeFaceOptions()
 options.ExtrudeType = ExtrudeType.Add
-result = ExtrudeFaces.Execute(selection, MM(2.5), options)
+result = ExtrudeFaces.Execute(selection, MM(1.5), options)
+# EndBlock
+
+# Change Object Visibility
+selection = BodySelection.Create(GetRootPart().Bodies[1])
+visibility = VisibilityType.Show
+inSelectedView = False
+faceLevel = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView, faceLevel)
+# EndBlock
+
+# Merge Bodies
+targets = BodySelection.Create([GetRootPart().Bodies[2],
+    GetRootPart().Bodies[1]])
+result = Combine.Merge(targets)
 # EndBlock
 
 # Change Object Visibility
@@ -54,108 +99,102 @@ options = MakeSolidsOptions()
 result = Combine.Intersect(targets, tools, options)
 # EndBlock
 
+
 # Delete Objects
-selection = BodySelection.Create(GetRootPart().Bodies[2])
-result = Combine.RemoveRegions(selection)
+selection = BodySelection.Create([GetRootPart().Bodies[0],
+    GetRootPart().Bodies[2]])
+result = Delete.Execute(selection)
+# EndBlockSelection.Empty()
+
+# Translate Along Y Handle
+selection = BodySelection.Create(GetRootPart().Bodies[0])
+direction = Direction.DirY
+options = MoveOptions()
+result = Move.Translate(selection, direction, MM(-0.5), options)
+# EndBlock
+
+# Translate Along Z Handle
+selection = BodySelection.Create(GetRootPart().Bodies[0])
+direction = Direction.DirZ
+options = MoveOptions()
+result = Move.Translate(selection, direction, MM(5.5), options)
+# EndBlock
+
+# Create Datum Plane
+selection = Selection.Create(GetRootPart().CoordinateSystems[0].Axes[0])
+result = DatumPlaneCreator.Create(selection, False, None)
+# EndBlock
+
+# Slice Bodies by Plane
+selection = BodySelection.Create(GetRootPart().Bodies[0])
+datum = Selection.Create(GetRootPart().DatumPlanes[0])
+result = SplitBody.ByCutter(selection, datum)
 # EndBlock
 
 # Delete Objects
 selection = BodySelection.Create(GetRootPart().Bodies[0])
-result = Delete.Execute(selection)
+result = Combine.RemoveRegions(selection)
 # EndBlock
 
 # Create Named Selection Group
-primarySelection = FaceSelection.Create(GetRootPart().Bodies[0].Faces[1])
+primarySelection = FaceSelection.Create(GetRootPart().Bodies[0].Faces[5])
 secondarySelection = Selection.Empty()
 result = NamedSelection.Create(primarySelection, secondarySelection)
 # EndBlock
 
 # Rename Named Selection
-result = NamedSelection.Rename("Group1", "Input")
+result = NamedSelection.Rename("Group1", "inlet")
 # EndBlock
 
 # Create Named Selection Group
-primarySelection = FaceSelection.Create(GetRootPart().Bodies[0].Faces[0])
+primarySelection = FaceSelection.Create(GetRootPart().Bodies[0].Faces[4])
 secondarySelection = Selection.Empty()
 result = NamedSelection.Create(primarySelection, secondarySelection)
 # EndBlock
 
 # Rename Named Selection
-result = NamedSelection.Rename("Group1", "Output")
+result = NamedSelection.Rename("Group1", "outlet")
 # EndBlock
 
 # Create Named Selection Group
-primarySelection = FaceSelection.Create([GetRootPart().Bodies[0].Faces[59],
+primarySelection = FaceSelection.Create(GetRootPart().Bodies[0].Faces[3])
+secondarySelection = Selection.Empty()
+result = NamedSelection.Create(primarySelection, secondarySelection)
+# EndBlock
+
+# Rename Named Selection
+result = NamedSelection.Rename("Group1", "moving wall")
+# EndBlock
+
+# Create Named Selection Group
+primarySelection = FaceSelection.Create([GetRootPart().Bodies[0].Faces[1],
+    GetRootPart().Bodies[0].Faces[2]])
+secondarySelection = Selection.Empty()
+result = NamedSelection.Create(primarySelection, secondarySelection)
+# EndBlock
+
+# Rename Named Selection
+result = NamedSelection.Rename("Group1", "symmetry")
+# EndBlock
+
+# Create Named Selection Group
+primarySelection = FaceSelection.Create(GetRootPart().Bodies[0].Faces[:])
+secondarySelection = Selection.Empty()
+# Select the faces to subtract
+subtractSelection = FaceSelection.Create([GetRootPart().Bodies[0].Faces[1],
     GetRootPart().Bodies[0].Faces[2],
-    GetRootPart().Bodies[0].Faces[58]])
-secondarySelection = Selection.Empty()
-result = NamedSelection.Create(primarySelection, secondarySelection)
-# EndBlock
-
-# Rename Named Selection
-result = NamedSelection.Rename("Group1", "Free flow")
-# EndBlock
-
-# Create Named Selection Group
-primarySelection = FaceSelection.Create([GetRootPart().Bodies[0].Faces[3],
+    GetRootPart().Bodies[0].Faces[3],
     GetRootPart().Bodies[0].Faces[4],
-    GetRootPart().Bodies[0].Faces[5],
-    GetRootPart().Bodies[0].Faces[6],
-    GetRootPart().Bodies[0].Faces[7],
-    GetRootPart().Bodies[0].Faces[8],
-    GetRootPart().Bodies[0].Faces[9],
-    GetRootPart().Bodies[0].Faces[10],
-    GetRootPart().Bodies[0].Faces[11],
-    GetRootPart().Bodies[0].Faces[12],
-    GetRootPart().Bodies[0].Faces[13],
-    GetRootPart().Bodies[0].Faces[14],
-    GetRootPart().Bodies[0].Faces[15],
-    GetRootPart().Bodies[0].Faces[16],
-    GetRootPart().Bodies[0].Faces[17],
-    GetRootPart().Bodies[0].Faces[18],
-    GetRootPart().Bodies[0].Faces[19],
-    GetRootPart().Bodies[0].Faces[20],
-    GetRootPart().Bodies[0].Faces[21],
-    GetRootPart().Bodies[0].Faces[22],
-    GetRootPart().Bodies[0].Faces[23],
-    GetRootPart().Bodies[0].Faces[24],
-    GetRootPart().Bodies[0].Faces[25],
-    GetRootPart().Bodies[0].Faces[26],
-    GetRootPart().Bodies[0].Faces[27],
-    GetRootPart().Bodies[0].Faces[28],
-    GetRootPart().Bodies[0].Faces[29],
-    GetRootPart().Bodies[0].Faces[30],
-    GetRootPart().Bodies[0].Faces[31],
-    GetRootPart().Bodies[0].Faces[32],
-    GetRootPart().Bodies[0].Faces[33],
-    GetRootPart().Bodies[0].Faces[34],
-    GetRootPart().Bodies[0].Faces[35],
-    GetRootPart().Bodies[0].Faces[36],
-    GetRootPart().Bodies[0].Faces[37],
-    GetRootPart().Bodies[0].Faces[38],
-    GetRootPart().Bodies[0].Faces[39],
-    GetRootPart().Bodies[0].Faces[40],
-    GetRootPart().Bodies[0].Faces[41],
-    GetRootPart().Bodies[0].Faces[42],
-    GetRootPart().Bodies[0].Faces[43],
-    GetRootPart().Bodies[0].Faces[44],
-    GetRootPart().Bodies[0].Faces[45],
-    GetRootPart().Bodies[0].Faces[46],
-    GetRootPart().Bodies[0].Faces[47],
-    GetRootPart().Bodies[0].Faces[48],
-    GetRootPart().Bodies[0].Faces[49],
-    GetRootPart().Bodies[0].Faces[50],
-    GetRootPart().Bodies[0].Faces[51],
-    GetRootPart().Bodies[0].Faces[52],
-    GetRootPart().Bodies[0].Faces[53],
-    GetRootPart().Bodies[0].Faces[54],
-    GetRootPart().Bodies[0].Faces[55],
-    GetRootPart().Bodies[0].Faces[56],
-    GetRootPart().Bodies[0].Faces[57]])
-secondarySelection = Selection.Empty()
-result = NamedSelection.Create(primarySelection, secondarySelection)
+    GetRootPart().Bodies[0].Faces[5]])
+diffSelection = FaceSelection.Difference(primarySelection, subtractSelection)
+result = NamedSelection.Create(diffSelection, secondarySelection)
 # EndBlock
 
 # Rename Named Selection
-result = NamedSelection.Rename("Group1", "Walls")
+result = NamedSelection.Rename("Group1", "wall")
+# EndBlock
+
+# Save File
+options = ExportOptions.Create()
+DocumentSave.Execute(r"E:\Summer Placement\Summer Placement Testbed\automationtest.scdoc", options)
 # EndBlock
