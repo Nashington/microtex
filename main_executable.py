@@ -2,7 +2,7 @@ import microtextures
 import os
 import numpy as np
 import time
-import ansys.fluent.core as pyfluent
+
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     
     #for i, angle in zip(range(40,43), np.linspace(0, 90, 3)):
     #
-    #     model = microtextures.Scallop(0.1, 0.15, 0.2, angle).texture_disc()
+    #    model = microtextures.Scallop(0.1, 0.15, 0.2, angle).texture_disc()
     #    microtextures.CQModel().export_STEP(model, i)
     model = microtextures.Scallop(0.1, 0.15, 0.2, 90).texture_disc()
     microtextures.CQModel(0,0,0).export_STEP(model, 8)
