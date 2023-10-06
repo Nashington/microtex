@@ -12,10 +12,10 @@ import os
 # Draw a diagram to define variables (plot with cadquery as well?)
 # Python classes are capitalised
 
-diameter = 10
+diameter = 25
 height = 1
 #angle = 30
-area_w = 4
+area_w = 1
 
 class CQModel:
     def __init__(self, diameter, height, area_w) -> None:
