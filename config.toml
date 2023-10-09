@@ -1,0 +1,10 @@
+[filepaths]
+models = 'E'
+csv = 'E:\Summer Placement\Summer Placement Testbed\'
+ansys_scdm = 'E:\ANSYS Inc\ANSYS Student\v232\scdm\'
+
+[dimensions]
+
+[ansys]
+version = '23.2.0'
+

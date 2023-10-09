@@ -5,15 +5,23 @@ import time
 import PyAnsys.PyFluent_main as pyfluent_main
 import PyAnsys.SC_cmd as sc_cmd
 import PyAnsys.boundarylayerthickness as blt
+from tomlkit import parse
 
 def main(depth, width, gap):
     tick = time.time()
+
+    with open('config.toml', 'r') as file:
+        toml_string = file.read()
+        config = parse(toml_string)
+
+    fp_testbed = (config["filepaths"]["models"])
+
     # change working directory
-    os.chdir(r"E:\Summer Placement\Summer Placement Testbed")
+    os.chdir(fp_testbed)
 
     # create model
     model = microtextures.Scallop(depth, width, gap, 90).texture_disc()
-    microtextures.CQModel(10,1,4).export_STEP(model, 8)
+    microtextures.CQModel(25,1,4).export_STEP(model, 8)
 
     tock = time.time()
     print("Model creation time taken: ", tock - tick)

@@ -1,12 +1,23 @@
 import pandas as pd
 import os
+import sys
+from tomlkit import parse
 
 
 def execute():
-    os.chdir(r"E:\Summer Placement\Summer Placement Testbed")
+    sys.path.append("..")
+
+    with open('config.toml', 'r') as file:
+        toml_string = file.read()
+        config = parse(toml_string)
+
+    fp_csv = (config["filepaths"]["csv"])
+    #os.chdir(r"D:\Work\Summer Placement Testbed")
 
     # Replace 'your_csv_file.csv' with the path to your CSV file
-    csv_file = 'PyFluent_probe.csv'
+    csv_file = fp_csv + 'PyFluent_probe.csv'
+
+    print(csv_file)
 
     # Read the CSV file into a DataFrame
     df = pd.read_csv(csv_file)
