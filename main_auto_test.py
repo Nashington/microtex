@@ -20,8 +20,11 @@ def main(depth, width, gap):
     os.chdir(fp_testbed)
 
     # create model
-    model = microtextures.Scallop(depth, width, gap, 90).texture_disc()
-    microtextures.CQModel(25,1,4).export_STEP(model, 8)
+    model = microtextures.Scallop(depth, width, gap, 0).texture_disc()
+    microtextures.CQModel().export_STEP(model, 8)
+
+    # store a copy of the model with identifiers in name
+    microtextures.CQModel().export_STEP(model, r'_' + str(depth) + r'_' + str(width) + r'_' + str(gap))
 
     tock = time.time()
     print("Model creation time taken: ", tock - tick)
@@ -47,5 +50,5 @@ def main(depth, width, gap):
     return y_value
 
 if __name__=='__main__':
-    boundary_layer_thickness = main(0.1, 0.15, 0.2)
+    boundary_layer_thickness = main(0.05,0.05,0.05)
     print(boundary_layer_thickness)
