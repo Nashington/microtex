@@ -5,6 +5,8 @@ from tomlkit import parse
 
 
 def execute():
+    
+    #append parent directory to sys.path so that config.toml can be accessed
     sys.path.append("..")
 
     with open('config.toml', 'r') as file:
